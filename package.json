@@ -19,7 +19,6 @@
    },
    "dependencies": {
       "@ecoflow-api/rest-client": "^0.3.0",
-      "axios": "^1.13.5",
       "grammy": "^1.40.1"
    }
 }
