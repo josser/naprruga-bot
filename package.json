@@ -7,7 +7,8 @@
    "scripts": {
       "build": "tsc",
       "dev": "tsx watch --env-file=.env src/index.ts",
-      "test": "echo \"Error: no test specified\" && exit 1"
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "npm run build && pm2 start dist/index.js -- --env-file=.env"
    },
    "author": "",
    "license": "ISC",
@@ -19,6 +20,7 @@
    },
    "dependencies": {
       "@ecoflow-api/rest-client": "^0.3.0",
-      "grammy": "^1.40.1"
+      "grammy": "^1.40.1",
+      "pm2": "^6.0.14"
    }
 }
