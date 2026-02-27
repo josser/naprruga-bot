@@ -6,7 +6,7 @@ import EcoFlowService from "./services/ecoflow.js";
 const bot = new Bot(config.telegram.token);
 const ecoflowService = new EcoFlowService();
 
-bot.hears(/світло|свет|харчування|напруга/, async (ctx) => {
+bot.hears(/світло|свет|харчування|напруга/i, async (ctx) => {
    ecoflowService.getVoltage().then(voltage => {
       if (voltage === 0) {
          ctx.reply("⚠️ Світла нема! Напруга 0 В.");

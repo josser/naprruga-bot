@@ -18,6 +18,6 @@ export default class EcoFlowService {
 
    async getVoltage(): Promise<number> {
       const props = await this.device.getProperties();
-      return props['inv.acInVol'];
+      return props['inv.acInVol'] / 1000;
    }
 }
