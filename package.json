@@ -1,0 +1,25 @@
+{
+   "name": "napruga",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "type": "module",
+   "scripts": {
+      "build": "tsc",
+      "dev": "tsx watch --env-file=.env src/index.ts",
+      "test": "echo \"Error: no test specified\" && exit 1"
+   },
+   "author": "",
+   "license": "ISC",
+   "devDependencies": {
+      "@tsconfig/node24": "^24.0.4",
+      "@types/node": "^25.3.2",
+      "tsx": "^4.21.0",
+      "typescript": "^5.9.3"
+   },
+   "dependencies": {
+      "@ecoflow-api/rest-client": "^0.3.0",
+      "axios": "^1.13.5",
+      "grammy": "^1.40.1"
+   }
+}
