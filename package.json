@@ -8,8 +8,9 @@
       "build": "tsc",
       "dev": "tsx watch --env-file=.env src/index.ts",
       "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "npm run build && pm2 start dist/index.js -- --env-file=.env",
-      "db:migrate": "knex migrate:latest --knexfile=./src/knexfile.cjs"
+      "start": "npm run db:migrate:prod && node dist/index.js -- --env-file=.env",
+      "db:migrate": "knex migrate:latest --knexfile=./src/knexfile.cjs",
+      "db:migrate:prod": "ls -la dist/ && knex migrate:latest --knexfile=./dist/knexfile.cjs"
    },
    "author": "",
    "license": "ISC",
@@ -24,7 +25,6 @@
       "better-sqlite3": "^12.8.0",
       "grammy": "^1.41.1",
       "knex": "^3.2.5",
-      "moment": "^2.30.1",
-      "pm2": "^6.0.14"
+      "moment": "^2.30.1"
    }
 }
