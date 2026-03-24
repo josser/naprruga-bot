@@ -1,12 +1,16 @@
 
 export default {
    telegram: {
-      token: process.env.TELEGRAM_TOKEN || "your-telegram-bot-token-here"
+      token: process.env.TELEGRAM_TOKEN || "your-telegram-bot-token-here",
+      admin_id: (process.env.TELEGRAM_ADMIN_ID || "your-telegram-admin-id-here").split(','),
    },
    ecoflow: {
       access_key: process.env.ECOFLOW_ACCESS_KEY || "your-access-key-here",
       secret_key: process.env.ECOFLOW_SECRET_KEY || "your-access-secret-here",
       sn: process.env.ECOFLOW_SN || "your-device-sn-here",
+   },
+   db: {
+     path: process.env.DB_PATH || "./db.sqlite"
    },
    monitor: {
       interval: 10 * 1000, // Check every 10 seconds

@@ -8,19 +8,23 @@
       "build": "tsc",
       "dev": "tsx watch --env-file=.env src/index.ts",
       "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "npm run build && pm2 start dist/index.js -- --env-file=.env"
+      "start": "npm run build && pm2 start dist/index.js -- --env-file=.env",
+      "db:migrate": "knex migrate:latest --knexfile=./src/knexfile.cjs"
    },
    "author": "",
    "license": "ISC",
    "devDependencies": {
       "@tsconfig/node24": "^24.0.4",
-      "@types/node": "^25.3.2",
+      "@types/node": "^24.12.0",
       "tsx": "^4.21.0",
-      "typescript": "^5.9.3"
+      "typescript": "^6.0.2"
    },
    "dependencies": {
       "@ecoflow-api/rest-client": "^0.3.0",
-      "grammy": "^1.40.1",
-      "pm2": "^6.0.14"
+      "grammy": "^1.41.1",
+      "knex": "^3.2.5",
+      "moment": "^2.30.1",
+      "pm2": "^6.0.14",
+      "sqlite3": "^6.0.1"
    }
 }
