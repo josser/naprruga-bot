@@ -19,7 +19,7 @@ export class LiveStreamer {
    public async setupLiveDataStreams() {
       const liveChatIds = await this.db.getLivechatIds();
       for (const chat of liveChatIds) {
-         this.addLiveDataStream(chat);
+         await this.addLiveDataStream(chat);
       }
    }
 
