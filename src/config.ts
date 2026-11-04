@@ -15,6 +15,7 @@ export default {
    monitor: {
       interval: 10 * 1000, // Check every 10 seconds
       messages_max_interval: 5 * 60 * 1000, // Send at most one message per 5 minute
+      confirm_readings: 3, // Consecutive readings required to confirm a power state change
       threshold: {
          low_voltage: 205,
          high_voltage: 240

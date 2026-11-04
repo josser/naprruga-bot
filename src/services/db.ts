@@ -10,6 +10,7 @@ export interface Device {
 
 export default class Store {
    private db: Knex;
+   private tracking = new Map<number, { confirmedOn: boolean; streak: number }>();
 
    constructor() {
       this.db = knex(knexfile);
@@ -47,6 +48,15 @@ export default class Store {
          .innerJoin("devices", "chats.device_id", "devices.id");
    }
 
+   /**
+    * Debounced power state tracking. A state flip is reported only after
+    * `config.monitor.confirm_readings` consecutive readings agree on the new state,
+    * so a single glitchy 0 V reading can't trigger a false outage.
+    *
+    * Returns `[poweredOn, since]` when a flip is confirmed, otherwise undefined.
+    * `last_on_at` / `last_off_at` are only refreshed by readings that agree with the
+    * confirmed state, so they keep their meaning (last seen on / last seen off).
+    */
    async stateChanged(device_id: number, voltage: number) {
       const device = await this.db("devices").where({ id: device_id }).first();
 
@@ -56,19 +66,39 @@ export default class Store {
 
       const poweredOn = voltage > 0;
 
-      if (poweredOn) {
-         await this.db("devices").where({ id: device_id }).update({ last_on_at: new Date() });
-      } else {
-         await this.db("devices").where({ id: device_id }).update({ last_off_at: new Date() });
+      let track = this.tracking.get(device_id);
+      if (!track) {
+         // First reading since startup: restore the confirmed state from the DB.
+         track = { confirmedOn: toMs(device.last_on_at) >= toMs(device.last_off_at), streak: 0 };
+         this.tracking.set(device_id, track);
       }
 
-      const STATE_CHANGE_THRESHOLD = 30 * 1000; // 30 seconds
+      if (poweredOn === track.confirmedOn) {
+         track.streak = 0;
+         await this.db("devices")
+            .where({ id: device_id })
+            .update(poweredOn ? { last_on_at: new Date() } : { last_off_at: new Date() });
+         return;
+      }
 
-      if (Date.now() - device.last_on_at > STATE_CHANGE_THRESHOLD && poweredOn) {
-         return [poweredOn, device.last_on_at];
+      track.streak++;
+      if (track.streak < config.monitor.confirm_readings) {
+         return;
       }
-      if (!poweredOn && Date.now() - device.last_off_at > STATE_CHANGE_THRESHOLD) {
-         return [poweredOn, device.last_off_at];
-      }
+
+      // Flip confirmed.
+      track.confirmedOn = poweredOn;
+      track.streak = 0;
+      await this.db("devices")
+         .where({ id: device_id })
+         .update(poweredOn ? { last_on_at: new Date() } : { last_off_at: new Date() });
+
+      return poweredOn ? [true, device.last_on_at] : [false, device.last_off_at];
    }
+}
+
+function toMs(value: unknown): number {
+   if (typeof value === "number") return value;
+   const ms = new Date(value as string).getTime();
+   return Number.isNaN(ms) ? 0 : ms;
 }

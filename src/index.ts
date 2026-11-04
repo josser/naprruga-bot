@@ -41,7 +41,12 @@ bot.command("live", async (ctx) => {
       }
       const device = await db.ensureDeviceBySn(ctx.match);
       const result = await db.toggleLiveChatId(ctx.message.chat.id, device.id);
-      live.addLiveDataStream({ chat_id: ctx.message.chat.id.toString(), device_id: device.id, sn: ctx.match });
+      if (result === "👍") {
+         await live.addLiveDataStream({ chat_id: ctx.message.chat.id.toString(), device_id: device.id, sn: ctx.match });
+      } else {
+         // Toggled off: stop alerting this chat (previously the stream was re-added anyway).
+         live.removeLiveDataStream(ctx.message.chat.id.toString());
+      }
       ctx.react(result);
    }
 });
