@@ -32,6 +32,7 @@ bot.hears(/світло|свет|харчування|напруга/i, async (c
 });
 
 bot.command("live", async (ctx) => {
+   console.log('live command received', ctx.match, ctx.message?.from.id);
    if (ctx.message?.from.id && config.telegram.admin_id.includes(ctx.message?.from.id.toString())) {
       if (ctx.match.length < 5) {
          await db.disableAllDevicesForChat(ctx.message.chat.id);
